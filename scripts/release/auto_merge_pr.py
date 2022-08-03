@@ -37,6 +37,15 @@ def auto_merge(headers, number):
         logger.debug(r.text)
         sys.exit(1)
 
+def get_pr_url():
+    commit_id='491f225e317c6d7c4d752849994576e3e3ba73b3'
+    # curl https://api.github.com/repos/OWNER/REPO/commits/COMMIT_SHA/pulls
+    get_url = f'https://api.github.com/repos/Azure/azure-cli-extensions/commits/{commit_id}/pulls'
+    try:
+        r = requests.get(get_url, headers=headers)
+    except requests.RequestException as e:
+        raise e
+    logger.info(r.json()[0]["html_url"])
 
 def main():
     try:
@@ -52,7 +61,8 @@ def main():
     headers = {'Authorization': 'token %s' % token}
     # get pr id
     number = json.loads(ref)['number']
-    auto_merge(headers, number)
+    # auto_merge(headers, number)
+    get_pr_url()
 
 
 if __name__ == '__main__':
