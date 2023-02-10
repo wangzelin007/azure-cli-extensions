@@ -18,7 +18,7 @@ from azure.cli.core.azclierror import ManualInterrupt, InvalidArgumentValueError
 import subprocess
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 
-from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer, live_only)  # pylint: disable=import-error
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)  # pylint: disable=import-error
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -124,7 +124,7 @@ def install_kubectl_client():
         raise CLIInternalError("Unable to install kubectl. Error: ", str(e))
 
 
-class Connectedk8sScenarioTest(LiveScenarioTest):
+class Connectedk8sScenarioTest(ScenarioTest):
 
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
