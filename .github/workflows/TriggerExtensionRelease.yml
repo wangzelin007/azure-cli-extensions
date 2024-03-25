@@ -21,7 +21,7 @@ jobs:
             egress-policy: audit
 
         - name: Azure Pipelines Action
-          uses: Azure/pipelines@v1
+          uses: Azure/pipelines@v1.2
           with:
             azure-devops-project-url: https://dev.azure.com/azclitools/internal
             azure-pipeline-name: 'testOneBranchCLI-Official'
