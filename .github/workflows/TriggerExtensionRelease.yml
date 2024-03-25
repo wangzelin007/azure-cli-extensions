@@ -28,3 +28,4 @@ jobs:
             # https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows
             # expire on 2024/9/21
             azure-devops-token: ${{ secrets.ONE_BRANCH_TOKEN }}
+            azure-pipeline-variables:  '{"variable1": "${{ github.sha }}"}'
