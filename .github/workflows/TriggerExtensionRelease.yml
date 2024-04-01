@@ -36,4 +36,5 @@ jobs:
             # azure-pipeline-variables:  '{"commit_id": "${{ github.sha }}"}'
             azure-pipeline-variables:  '{"commit_id": "cd149b7c50dbac2e3124ef1743a3270a727998ca"}'
         - name: Wait for Extension Release
-          run: sleep 600
+          # azure-cli-extensions-release.yml + azure-cli-extensions-sync-after-release.yml ~= 20 minutes
+          run: sleep 1200
