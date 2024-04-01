@@ -1,7 +1,7 @@
-name: CI
+name: Trigger ADO OneBranch Extension Release Pipeline
 
 # Run this workflow every time a commit gets pushed to main
-# This triggers the ADO OneBranch CI Pipeline
+# This triggers the ADO OneBranch Extension Release Pipeline
 on:
   push:
     branches:
@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
     build:
-        name: Trigger OneBranch ADO Pipeline (CI)
+        name: Trigger Extension Release Pipeline
         runs-on: ubuntu-latest
         steps:
         - name: Harden Runner
