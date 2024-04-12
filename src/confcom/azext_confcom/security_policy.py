@@ -352,7 +352,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
     # pylint: disable=R0914, R0915
     def populate_policy_content_for_all_images(
-        self, individual_image=False, tar_mapping=None
+        self, individual_image=False, tar_mapping=None, faster_hashing=False,
     ) -> None:
         # suppress warning which will break the progress bar
         warnings.filterwarnings(
@@ -412,7 +412,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                         image.set_command(command)
 
                     # merge envs for user container image
-                    envs = image_info.get("Env")
+                    envs = image_info.get("Env") or []
                     env_names = [
                         env_var[
                             config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS_RULE
@@ -438,8 +438,10 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                     if signals:
                         image.set_signals(signals)
 
-                    if (deepdiff.DeepDiff(image.get_user(), config.DEFAULT_USER, ignore_order=True) == {}
-                            and image_info.get("User") != ""):
+                    if (
+                        not deepdiff.DeepDiff(image.get_user(), config.DEFAULT_USER, ignore_order=True)
+                        and image_info.get("User") != ""
+                    ):
                         # valid values are in the form "user", "user:group", "uid", "uid:gid", "user:gid", "uid:group"
                         # where each entry is either a string or an unsigned integer
                         # "" means any user (use default)
@@ -469,7 +471,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                     tar_location = get_tar_location_from_mapping(tar_mapping, image_name)
                 # populate layer info
                 image.set_layers(proxy.get_policy_image_layers(
-                    image.base, image.tag, tar_location=tar_location if tar else ""
+                    image.base, image.tag, tar_location=tar_location if tar else "", faster_hashing=faster_hashing
                 ))
 
                 progress.update()

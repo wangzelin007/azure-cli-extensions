@@ -17,14 +17,16 @@ from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 
 class ContainerappComposePreviewCommandScenarioTest(ContainerappComposePreviewScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_with_command_string(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composecommandstr', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     command: echo "hello world"
     expose:
@@ -44,7 +46,7 @@ services:
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`{app}`].properties.template.containers[0].command[0]', "['echo \"hello world\"']"),
+            self.check(f'[?name==`foo`].properties.template.containers[0].command[0]', "['echo \"hello world\"']"),
         ])
 
         clean_up_test_file(compose_file_name)
@@ -53,10 +55,9 @@ services:
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_with_command_list(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composecommandlist', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     command: ["echo", "hello world"]
     expose:
@@ -75,7 +76,7 @@ services:
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`{app}`].properties.template.containers[0].command[0]', "['echo \"hello world\"']"),
+            self.check(f'[?name==`foo`].properties.template.containers[0].command[0]', "['echo \"hello world\"']"),
         ])
 
         clean_up_test_file(compose_file_name)
@@ -84,10 +85,9 @@ services:
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_with_command_list_and_entrypoint(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-        app = self.create_random_name(prefix='composeentry', length=24)
         compose_text = f"""
 services:
-  {app}:
+  foo:
     image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
     command: ["echo", "hello world"]
     entrypoint: /code/entrypoint.sh
@@ -107,8 +107,9 @@ services:
         command_string += ' --resource-group {rg}'
         command_string += ' --environment {environment}'
         self.cmd(command_string, checks=[
-            self.check(f'[?name==`{app}`].properties.template.containers[0].command[0]', "['/code/entrypoint.sh']"),
-            self.check(f'[?name==`{app}`].properties.template.containers[0].args[0]', "['echo \"hello world\"']"),
+            self.check(f'[?name==`foo`].properties.template.containers[0].command[0]', "['/code/entrypoint.sh']"),
+            self.check(f'[?name==`foo`].properties.template.containers[0].args[0]', "['echo \"hello world\"']"),
         ])
 
+        self.cmd(f'containerapp delete -n foo -g {resource_group} --yes', expect_failure=False)
         clean_up_test_file(compose_file_name)

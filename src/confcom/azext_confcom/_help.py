@@ -18,7 +18,7 @@ helps[
     "confcom acipolicygen"
 ] = """
     type: command
-    short-summary: Create a Confidential Container Security Policy.
+    short-summary: Create a Confidential Container Security Policy for ACI.
 
     parameters:
         - name: --input -i
@@ -81,6 +81,10 @@ helps[
           type: boolean
           short-summary: 'When enabled, the generated security policy is printed to the command line instead of injected into the input ARM Template'
 
+        - name: --faster-hashing
+          type: boolean
+          short-summary: 'When enabled, the hashing algorithm used to generate the policy is faster but less memory efficient'
+
     examples:
         - name: Input an ARM Template file to inject a base64 encoded Confidential Container Security Policy into the ARM Template
           text: az confcom acipolicygen --template-file "./template.json"
@@ -90,4 +94,46 @@ helps[
           text: az confcom acipolicygen --template-file "./template.json" -s "./output-file.txt" --print-policy
         - name: Input an ARM Template file and use a tar file as the image source instead of the Docker daemon
           text: az confcom acipolicygen --template-file "./template.json" --tar "./image.tar"
+"""
+
+helps[
+    "confcom katapolicygen"
+] = """
+    type: command
+    short-summary: Create a Confidential Container Security Policy for AKS.
+
+    parameters:
+        - name: --yaml -y
+          type: string
+          short-summary: 'Input YAML Kubernetes file'
+
+        - name: --outraw
+          type: boolean
+          short-summary: 'Output policy in clear text compact JSON instead of default base64 format'
+
+        - name: --print-policy
+          type: boolean
+          short-summary: 'Print the base64 encoded generated policy in the terminal'
+
+        - name: --config-map-file -c
+          type: string
+          short-summary: 'Path to config map file'
+
+        - name: --use-cached-files -u
+          type: bool
+          short-summary: 'Use cached files to save on computation time'
+
+        - name: --settings-file-name -j
+          type: bool
+          short-summary: 'Path to custom settings file'
+
+    examples:
+        - name: Input a Kubernetes YAML file to inject a base64 encoded Confidential Container Security Policy into the YAML file
+          text: az confcom katapolicygen --yaml "./pod.json"
+        - name: Input a Kubernetes YAML file to print a base64 encoded Confidential Container Security Policy to stdout
+          text: az confcom katapolicygen --yaml "./pod.json" --print-policy
+        - name: Input a Kubernetes YAML file and custom settings file to inject a base64 encoded Confidential Container Security Policy into the YAML file
+          text: az confcom katapolicygen --yaml "./pod.json" -j "./settings.json"
+        - name: Input a Kubernetes YAML file and external config map file
+          text: az confcom katapolicygen --yaml "./pod.json" --config-map-file "./configmap.json"
 """
